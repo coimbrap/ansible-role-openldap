@@ -1,0 +1,10 @@
+dn: cn=config
+changetype:modify
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: {{ cert_path }}/{{ ca_cert }}
+-
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: {{ cert_path }}/{{ server_cert }}
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: {{ cert_path }}/{{ server_key }}

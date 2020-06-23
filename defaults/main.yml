@@ -17,3 +17,4 @@ openldap_server_pkgs:
   - python-pexpect
 
 ldap_domain: ldap.{{ domain }}
+cert_path: /etc/ssl/ldap
