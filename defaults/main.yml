@@ -1,0 +1,17 @@
+---
+# defaults file for openldap
+
+openldap_server_pkgs:
+  - slapd
+  - ldap-utils
+  - python-selinux
+  - openssl
+  - debconf-utils
+  - python-pip
+  - libsasl2-dev
+  - python-dev
+  - libldap2-dev
+  - libssl-dev
+  - python-ldap
+  - python-ldap3
+  - python-pexpect
