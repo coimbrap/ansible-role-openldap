@@ -1,2 +1,3 @@
 ---
 # tasks file for openldap
+- import_tasks: install.yml

@@ -15,3 +15,5 @@ openldap_server_pkgs:
   - python-ldap
   - python-ldap3
   - python-pexpect
+
+ldap_domain: ldap.{{ domain }}
