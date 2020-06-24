@@ -1,0 +1,7 @@
+- name: forcetls | render template force-tls.ldif
+  template:
+    src: "templates/force-tls.ldif.j2"
+    dest: "{{ tmp_dir }}/force-tls.ldif"
+
+- name: forcetls | add config
+  command: "ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/force-tls.ldif"
