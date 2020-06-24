@@ -1,0 +1,40 @@
+dn: ou=groups,{{ ldap_basedc }}
+ou: groups
+objectClass: organizationalUnit
+
+dn: ou=people,{{ ldap_basedc }}
+ou: people
+objectClass: organizationalUnit
+
+dn: ou=removed people,{{ ldap_basedc }}
+ou: people
+objectClass: organizationalUnit
+
+dn: ou=unconfirmed people,{{ ldap_basedc }}
+ou: people
+objectClass: organizationalUnit
+
+dn: ou=system,{{ ldap_basedc }}
+ou: system
+objectClass: organizationalUnit
+
+{% if ous is defined %}
+{% for ou in ous %}
+dn: ou={{ ou|lower }},ou=groups,{{ ldap_basedc }}
+ou: {{ ou|lower }}
+objectClass: organizationalUnit
+
+dn: ou={{ ou|lower }},ou=people,{{ ldap_basedc }}
+ou: {{ ou|lower }}
+objectClass: organizationalUnit
+
+{% endfor %}
+{% else %}
+dn: ou={{ org|lower }},ou=groups,{{ ldap_basedc }}
+ou: {{ org|lower }}
+objectClass: organizationalUnit
+
+dn: ou={{ org|lower }},ou=people,{{ ldap_basedc }}
+ou: {{ org|lower }}
+objectClass: organizationalUnit
+{% endif %}

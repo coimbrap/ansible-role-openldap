@@ -1,0 +1,7 @@
+- name: organizational-units | render template organizational-units.ldif
+  template:
+    src: templates/organizational-units.ldif
+    dest: "{{ tmp_dir }}/organizational-units.ldif"
+
+- name: organizational-units | add config
+  command: "ldapadd -cxD cn=admin,{{ ldap_basedc }} -w {{ ldap_pw }} -f {{ tmp_dir }}/organizational-units.ldif"
