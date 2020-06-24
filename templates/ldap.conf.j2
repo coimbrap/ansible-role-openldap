@@ -1,2 +1,2 @@
-BASE   dc={{ domain.split('.') | join(",dc=") }}
+BASE   {{ ldap_basedc }}
 URI    ldap://{{ ldap_domain }}
