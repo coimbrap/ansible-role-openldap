@@ -1,0 +1,19 @@
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectclass: top
+olcmoduleload: unique.la
+olcmodulepath: /usr/lib/ldap
+
+dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+objectClass: olcOverlayConfig
+objectClass: olcUniqueConfig
+olcOverlay: unique
+#olcUniqueUri: ldap:///ou=people,{{ ldap_basedc }}?uid?sub
+#olcUniqueUri: ldap:///ou=people,{{ ldap_basedc }}?mail?sub
+#olcUniqueUri: ldap:///ou=people,{{ ldap_basedc }}?uidNumber?sub
+#olcUniqueUri: ldap:///ou=groups,{{ ldap_basedc }}?cn?sub
+olcUniqueAttribute: uid
+olcUniqueAttribute: mail
+olcUniqueAttribute: uidNumber
+olcUniqueAttribute: cn

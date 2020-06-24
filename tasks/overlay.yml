@@ -1,0 +1,87 @@
+- name: overlay | search directory for unique overlay
+  shell: "ldapsearch -QLLLY EXTERNAL -H ldapi:/// -b cn=config olcOverlay=unique"
+  register: unique_overlay
+
+- name: overlay | render template unique-overlay.ldif
+  template:
+    src: "{{ overlay_path }}/unique.ldif.j2"
+    dest: "{{ tmp_dir }}/unique-overlay.ldif"
+  when: unique_overlay.stdout == ""
+
+- name: overlay | add unique overlay
+  command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/unique-overlay.ldif"
+  when: unique_overlay.stdout == ""
+
+- name: overlay | search directory for memberOf overlay
+  shell: "ldapsearch -QLLLY EXTERNAL -H ldapi:/// -b cn=config olcOverlay=memberof"
+  register: memberof_overlay
+
+- name: overlay | render template memberof-overlay.ldif
+  template:
+    src: "{{ overlay_path }}/memberof.ldif.j2"
+    dest: "{{ tmp_dir }}/memberof-overlay.ldif"
+  when: memberof_overlay.stdout == ""
+
+- name: overlay | add memberOf overlay to openldap
+  command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/memberof-overlay.ldif"
+  when: memberof_overlay.stdout == ""
+
+- name: overlay | search directory for refint overlay
+  shell: "ldapsearch -QLLLY EXTERNAL -H ldapi:/// -b cn=config olcOverlay=refint"
+  register: refint_overlay
+
+- name: overlay | render template refint.ldif
+  template:
+    src: "{{ overlay_path }}/refint.ldif.j2"
+    dest: "{{ tmp_dir }}/refint-overlay.ldif"
+  when: refint_overlay.stdout == ""
+
+- name: overlay | add refint overlay to openldap
+  command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/refint-overlay.ldif"
+  when: refint_overlay.stdout == ""
+
+- name: overlay | search directory for auditlog overlay
+  shell: "ldapsearch -QLLLY EXTERNAL -H ldapi:/// -b cn=config olcOverlay=auditlog"
+  register: auditlog_overlay
+
+- name: overlay | create auditlog db folder
+  file: path="/var/log/openldap" state=directory owner=openldap group=openldap mode=u=rwX,g=rX,o= recurse=yes
+  when: auditlog_overlay.stdout == ""
+
+- name: overlay | render template auditlog.ldif
+  template:
+    src: "{{ overlay_path }}/auditlog.ldif.j2"
+    dest: "{{ tmp_dir }}/auditlog-overlay.ldif"
+  when: auditlog_overlay.stdout == ""
+
+- name: Add refint overlay to openldap
+  command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/auditlog-overlay.ldif"
+  when: auditlog_overlay.stdout == ""
+
+- name: overlay | search directory for ppolicy overlay
+  shell: "ldapsearch -QLLLY EXTERNAL -H ldapi:/// -b cn=config olcOverlay=ppolicy"
+  register: ppolicy_overlay
+
+- name: overlay | enable password policy schema
+  command: "ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif"
+  when: ppolicy_overlay.stdout == ""
+
+- name: overlay | render template ppolicy.ldif
+  template:
+    src: "{{ overlay_path }}/ppolicy.ldif.j2"
+    dest: "{{ tmp_dir }}/ppolicy.ldif"
+  when: ppolicy_overlay.stdout == ""
+
+- name: overlay | render template ppolicy-def.ldif
+  template:
+    src: "{{ overlay_path }}/ppolicy-def.ldif.j2"
+    dest: "{{ tmp_dir }}/ppolicy-def.ldif"
+  when: ppolicy_overlay.stdout == ""
+
+- name: overlay | add ppolicy overlay to openldap
+  command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/ppolicy.ldif"
+  when: ppolicy_overlay.stdout == ""
+
+- name: overlay | add refint entry to openldap
+  command: "ldapadd -H ldap://localhost -D 'cn=admin,{{ ldap_basedc }}' -y {{ ldap_pw }} -f {{ tmp_dir }}/ppolicy-def.ldif"
+  when: ppolicy_overlay.stdout == ""

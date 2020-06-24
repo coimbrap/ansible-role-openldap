@@ -1,0 +1,20 @@
+dn: cn=ppolicy,{{ ldap_basedc }}
+objectClass: top
+objectClass: device
+objectClass: pwdPolicy
+cn: ppolicy
+pwdAllowUserChange: TRUE
+pwdAttribute: userPassword
+pwdCheckQuality: 1
+pwdExpireWarning: 0
+pwdFailureCountInterval: 30
+pwdGraceAuthNLimit: 5
+pwdInHistory: 5
+pwdLockout: TRUE
+pwdLockoutDuration: 60
+pwdMaxAge: 0
+pwdMaxFailure: 5
+pwdMinAge: 0
+pwdMinLength: 5
+pwdMustChange: FALSE
+pwdSafeModify: FALSE

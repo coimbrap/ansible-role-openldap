@@ -1,0 +1,12 @@
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectclass: top
+olcModuleLoad: auditlog.la
+olcmodulepath: /usr/lib/ldap
+
+dn: olcOverlay=auditlog,olcDatabase={1}{{ ldap_backend }},cn=config
+objectClass: olcOverlayConfig
+objectClass: olcAuditLogConfig
+olcOverlay: auditlog
+olcAuditlogFile: /var/log/openldap/auditlog.ldif
