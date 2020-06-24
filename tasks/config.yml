@@ -1,0 +1,7 @@
+- name: config | render template conf.ldif
+  template:
+    src: "templates/gen-conf.ldif.j2"
+    dest: "{{ tmp_dir }}/conf.ldif"
+
+- name: config | add config
+  command: "ldapmodify -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/conf.ldif"
