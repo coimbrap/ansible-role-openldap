@@ -20,3 +20,4 @@ ldap_domain: ldap.{{ domain }}
 cert_path: /etc/ssl/ldap
 overlay_path: templates/overlays/
 ldap_basedc: dc={{ domain.split('.') | join(",dc=") }}
+log_level: 256

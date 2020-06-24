@@ -83,5 +83,5 @@
   when: ppolicy_overlay.stdout == ""
 
 - name: overlay | add refint entry to openldap
-  command: "ldapadd -H ldap://localhost -D 'cn=admin,{{ ldap_basedc }}' -y {{ ldap_pw }} -f {{ tmp_dir }}/ppolicy-def.ldif"
+  command: "ldapadd -H ldap://localhost -D 'cn=admin,{{ ldap_basedc }}' -w {{ ldap_pw }} -f {{ tmp_dir }}/ppolicy-def.ldif"
   when: ppolicy_overlay.stdout == ""

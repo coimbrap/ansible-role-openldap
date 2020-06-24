@@ -1,16 +1,16 @@
 ---
-- name: Fix certs permissions
+- name: starttls | fix certs permissions
   file: path="{{ cert_path }}" owner=openldap group=ssl-cert mode=0740 state=directory recurse=yes
 
-- name: Render template directory-config-tls.ldif
+- name: starttls | render template directory-config-tls.ldif
   template:
     src: templates/starttls.ldif.j2
     dest: "{{ tmp_dir }}/starttls.ldif"
 
-- name: Apply Directory config TLS
+- name: starttls | apply Directory config TLS
   command: "ldapmodify -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/starttls.ldif"
 
-- name: Add cert to local ldap conf
+- name: starttls | add cert to local ldap conf
   lineinfile:
     path: "/etc/ldap/ldap.conf"
     line: "TLS_CACERT {{ cert_path }}/{{ ca_cert }}"
