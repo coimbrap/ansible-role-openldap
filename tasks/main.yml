@@ -1,5 +1,10 @@
 ---
 # tasks file for openldap
 - import_tasks: install.yml
+- import_tasks: config.yml
 - import_tasks: starttls.yml
+- import_tasks: organizational-units.yml
 - import_tasks: overlay.yml
+- import_tasks: addviewerwritter.yml
+- import_tasks: acl.yml
+- import_tasks: forcetls.yml
