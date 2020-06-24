@@ -1,0 +1,13 @@
+dn: cn=viewer,ou=system,{{ ldap_basedc }}
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: viewer
+description: LDAP Viewer
+userPassword: {{ viewer_pass }}
+
+dn: cn=writer,ou=system,{{ ldap_basedc }}
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: writer
+description: LDAP Writer
+userPassword: {{ writer_pass }}

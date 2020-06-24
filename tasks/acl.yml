@@ -1,0 +1,7 @@
+- name: acl | render template acl.ldif
+  template:
+    src: "templates/acl.ldif.j2"
+    dest: "{{ tmp_dir }}/acl.ldif"
+
+- name: acl | add config
+  command: "ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/acl.ldif"

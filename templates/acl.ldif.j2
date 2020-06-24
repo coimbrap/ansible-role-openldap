@@ -1,0 +1,6 @@
+dn: olcDatabase={1}{{ ldap_backend }},cn=config
+changetype: modify
+replace: olcAccess
+olcAccess: to attrs=userPassword by self write by anonymous auth by dn="cn=writer,ou=system,{{ ldap_basedc }}" write by dn="cn=viewer,ou=system,{{ ldap_basedc }}" read by dn="cn=admin,{{ ldap_basedc }}" write by * none
+olcAccess: to dn.base="{{ ldap_basedc }}" by users read
+olcAccess: to * by self write by dn="cn=admin,{{ ldap_basedc }}" write by * read by anonymous none
