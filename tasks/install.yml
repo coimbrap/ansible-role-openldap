@@ -1,83 +1,90 @@
 ---
-- name: install | prepare /etc/hosts
-  lineinfile:
-    path: /etc/hosts
-    insertafter: '^127.0.0.1 '
-    line: "{{ item }}"
-  with_items:
-    - "127.0.0.2   {{ldap_domain}} ldap"
+- name: install | check if slapd are installed
+  package_facts:
+    manager: "auto"
 
-- name: install | install slapd and dependencies
-  apt:
-    name: "{{ openldap_server_pkgs }}"
-    state: present
-    update_cache: yes
+- name: install | start install
+  block:
+    - name: install | prepare /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        insertafter: '^127.0.0.1 '
+        line: "{{ item }}"
+      with_items:
+        - "127.0.0.2   {{ldap_domain}} ldap"
 
-- name: service | stopped slapd
-  service:
-    name: "slapd"
-    state: "stopped"
+    - name: install | install slapd and dependencies
+      apt:
+        name: "{{ openldap_server_pkgs }}"
+        state: present
+        update_cache: yes
 
-- name : install | find old slapd databases
-  find:
-    paths: /var/lib/ldap/
-  register: mdb
+    - name: service | stopped slapd
+      service:
+        name: "slapd"
+        state: "stopped"
 
-- name: install | remove old slapd databases
-  file:
-    path: "{{ item.path }}"
-    state: absent
-  with_items:
-    - "{{ mdb.files }}"
+    - name : install | find old slapd databases
+      find:
+        paths: /var/lib/ldap/
+      register: mdb
 
-- name: install | remove old slapd configuration
-  file:
-    path: "/etc/ldap/slapd.d"
-    state: absent
+    - name: install | remove old slapd databases
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items:
+        - "{{ mdb.files }}"
 
-- name: install | create local ldap parameters
-  template:
-    src: templates/ldap.conf.j2
-    dest: /etc/ldap/ldap.conf
+    - name: install | remove old slapd configuration
+      file:
+        path: "/etc/ldap/slapd.d"
+        state: absent
 
-- name: install | config slapd with debconf
-  debconf:
-    name: "slapd"
-    question: "{{ item.key }}"
-    vtype: "{{ item.type }}"
-    value: "{{ item.value }}"
-  with_items:
-    - key: slapd/no_configuration
-      type: boolean
-      value: false
-    - key: slapd/domain
-      type: string
-      value: "{{ domain }}"
-    - key: shared/organization
-      type: string
-      value: "{{ org }}"
-    - key: slapd/password1
-      type: password
-      value: "{{ ldap_pw }}"
-    - key: slapd/password2
-      type: password
-      value: "{{ ldap_pw }}"
-    - key: slapd/backend
-      type: select
-      value: "{{ ldap_backend|upper }}"
-    - key: slapd/purge_database
-      type: boolean
-      value: false
-    - key: slapd/move_old_database
-      type: boolean
-      value: true
-  no_log: True
+    - name: install | create local ldap parameters
+      template:
+        src: templates/ldap.conf.j2
+        dest: /etc/ldap/ldap.conf
 
-- name: install | apply slapd config
-  command: dpkg-reconfigure -f noninteractive slapd
+    - name: install | config slapd with debconf
+      debconf:
+        name: "slapd"
+        question: "{{ item.key }}"
+        vtype: "{{ item.type }}"
+        value: "{{ item.value }}"
+      with_items:
+        - key: slapd/no_configuration
+          type: boolean
+          value: false
+        - key: slapd/domain
+          type: string
+          value: "{{ domain }}"
+        - key: shared/organization
+          type: string
+          value: "{{ org }}"
+        - key: slapd/password1
+          type: password
+          value: "{{ ldap_pw }}"
+        - key: slapd/password2
+          type: password
+          value: "{{ ldap_pw }}"
+        - key: slapd/backend
+          type: select
+          value: "{{ ldap_backend|upper }}"
+        - key: slapd/purge_database
+          type: boolean
+          value: false
+        - key: slapd/move_old_database
+          type: boolean
+          value: true
+      no_log: True
 
-- name: install | start slapd and enabled it on boot
-  service:
-    name: "slapd"
-    state: "started"
-    enabled: true
+    - name: install | apply slapd config
+      command: dpkg-reconfigure -f noninteractive slapd
+
+    - name: install | start slapd and enabled it on boot
+      service:
+        name: "slapd"
+        state: "started"
+        enabled: true
+  when: "'slapd' not in ansible_facts.packages"
