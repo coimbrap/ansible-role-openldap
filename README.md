@@ -86,3 +86,12 @@ schemas:
           - maildomain
           - maildomainactif
 ```
+
+### Groups
+```yaml
+groupes:
+  - name: adminsys
+    org: elukerio
+    description: AdminSys
+    type: group0fNames
+```

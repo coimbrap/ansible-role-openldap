@@ -1,0 +1,8 @@
+{% for group in groupes %}
+dn: cn={{ group.name }},ou={{ group.org }},ou=groups,{{ ldap_basedc }}
+cn: {{ group.name }}
+description: {{ group.description }}
+objectClass: {{ group.type }}
+member: cn=admin,{{ ldap_basedc }}
+
+{% endfor %}
