@@ -1,6 +1,9 @@
 ---
 # defaults file for openldap
 
+pen: 15586
+schemas: []
+
 openldap_server_pkgs:
   - slapd
   - ldap-utils
@@ -16,8 +19,18 @@ openldap_server_pkgs:
   - python-ldap3
   - python-pexpect
 
+overlays:
+  - unique
+  - memberof
+  - refint
+  - auditlog
+  - ppolicy
+
 ldap_domain: ldap.{{ domain }}
 cert_path: /etc/ssl/ldap
 overlay_path: templates/overlays/
 ldap_basedc: dc={{ domain.split('.') | join(",dc=") }}
 log_level: 256
+
+rewrite_ldap: false
+install_ldap: false
