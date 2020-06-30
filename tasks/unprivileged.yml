@@ -1,0 +1,15 @@
+- name: add unprivileged account | render template account-conf.ldif
+  template:
+    src: "templates/unprivileged/account-conf.ldif.j2"
+    dest: "{{ tmp_dir }}/account-conf.ldif"
+
+- name: add unprivileged account | add config
+  command: "ldapadd -D 'cn=admin,{{ ldap_basedc }}' -w {{ ldap_pw }} -f {{ tmp_dir }}/account-conf.ldif -ZZ"
+
+- name: add unprivileged account | render template acl.ldif
+  template:
+    src: "templates/unprivileged/acl.ldif.j2"
+    dest: "{{ tmp_dir }}/acl.ldif"
+
+- name: add unprivileged account | add config
+  command: "ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/acl.ldif"

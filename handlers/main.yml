@@ -1,11 +1,6 @@
 ---
 # handlers file for openldap
-- name: "restart slapd"
-  service:
-   name: slapd
-   state: restarted
-
 - name: "reload slapd"
   service:
    name: slapd
-   state: reloaded
+   state: restarted
