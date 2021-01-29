@@ -1,0 +1,7 @@
+- name: schemas | render template schemas.ldif
+  template:
+    src: templates/schemas.ldif.j2
+    dest: "{{ tmp_dir }}/schemas.ldif"
+
+- name: schemas | add config
+  command: "ldapadd -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/schemas.ldif"

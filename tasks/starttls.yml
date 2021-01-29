@@ -13,5 +13,18 @@
 - name: starttls | add cert to local ldap conf
   lineinfile:
     path: "/etc/ldap/ldap.conf"
-    line: "TLS_CACERT {{ cert_path }}/{{ ca_cert }}"
+    line: "TLS_CACERT {{ cert_path }}/{{ server_cert }}"
   notify: "reload slapd"
+
+- name: starttls | fetch client cert
+  run_once: yes
+  fetch: src="{{ cert_path }}/{{ server_cert }}" dest=/tmp/ flat=yes
+
+- name: starttls | copy client cert to clients
+  copy: src="/tmp/{{ server_cert }}" dest="/opt/ca.crt"
+  delegate_to: "{{ item }}"
+  with_items:
+    - "{{ need_tls_cert }}"
+
+- name: starttls | modify clients configuration
+  command: 'sed -i "s/TLS_CACERT.*/TLS_CACERT \/opt\/ca.crt/" /etc/ldap/ldap.conf'
