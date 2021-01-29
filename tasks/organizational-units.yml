@@ -1,6 +1,6 @@
 - name: organizational-units | render template organizational-units.ldif
   template:
-    src: templates/organizational-units.ldif
+    src: templates/organizational-units.ldif.j2
     dest: "{{ tmp_dir }}/organizational-units.ldif"
 
 - name: organizational-units | add config

@@ -35,7 +35,7 @@
         dest: "{{ tmp_dir }}/unique-overlay.ldif"
     - name: overlay | add unique overlay
       command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/unique-overlay.ldif"
-  when: (rewrite_ldap or install_ldap or (unique is defined and unique_overlay.stdout == "")| default(False))
+  when: ((rewrite_ldap or install_ldap) and ('unique' in overlays)| default(False))
 
 - name: overlay | memberof
   block:
@@ -45,7 +45,7 @@
         dest: "{{ tmp_dir }}/memberof-overlay.ldif"
     - name: overlay | add memberOf overlay to openldap
       command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/memberof-overlay.ldif"
-  when: (rewrite_ldap or install_ldap or (unique is defined and memberof_overlay.stdout == "")| default(False))
+  when: ((rewrite_ldap or install_ldap) and ('memberof' in overlays)| default(False))
 
 - name: overlay | refint
   block:
@@ -55,7 +55,7 @@
         dest: "{{ tmp_dir }}/refint-overlay.ldif"
     - name: overlay | add refint overlay to openldap
       command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/refint-overlay.ldif"
-  when: (rewrite_ldap or install_ldap or (unique is defined and refint_overlay.stdout == "")| default(False))
+  when: ((rewrite_ldap or install_ldap) and ('refint' in overlays)| default(False))
 
 - name: overlay | auditlog
   block:
@@ -67,7 +67,7 @@
         dest: "{{ tmp_dir }}/auditlog-overlay.ldif"
     - name: overlay | add refint overlay to openldap
       command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/auditlog-overlay.ldif"
-  when: (rewrite_ldap or install_ldap or (unique is defined and auditlog_overlay.stdout == "")| default(False))
+  when: ((rewrite_ldap or install_ldap) and ('auditlog' in overlays)| default(False))
 
 - name: overlay | ppolicy
   block:
@@ -85,4 +85,4 @@
       command: "ldapadd -Q -Y EXTERNAL -H ldapi:/// -f {{ tmp_dir }}/ppolicy.ldif"
     - name: overlay | add ppolicy entry to openldap
       command: "ldapadd -H ldap://localhost -D 'cn=admin,{{ ldap_basedc }}' -w {{ ldap_pw }} -f {{ tmp_dir }}/ppolicy-def.ldif"
-  when: (rewrite_ldap or install_ldap or (unique is defined and ppolicy_overlay.stdout == "")| default(False))
+  when: ((rewrite_ldap or install_ldap) and ('ppolicy' in overlays)| default(False))
