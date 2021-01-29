@@ -1,8 +1,19 @@
-{% for group in groupes %}
-dn: cn={{ group.name }},ou={{ group.org }},ou=groups,{{ ldap_basedc }}
+{% for group in cn %}
+dn: cn={{ group.name }},{% if group.base is defined %}ou={{ group.base }},{% endif %}{{ ldap_basedc }}
 cn: {{ group.name }}
-description: {{ group.description }}
-objectClass: {{ group.type }}
-member: cn=admin,{{ ldap_basedc }}
+{% if group.description is defined %}description: {{ group.description }}{% endif %}
+
+{% if group.oc is defined %}
+{% for o in group.oc %}
+objectClass: {{ o }}
+{% endfor %}
+{% else %}
+objectClass: top
+objectClass: groupOfUniqueNames
+objectClass: posixGroup
+gidNumber: 2000
+uniqueMember: {% if group.member is defined %}{{ group.member }}{% endif %}
+
+{% endif %}
 
 {% endfor %}
