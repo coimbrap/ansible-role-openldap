@@ -6,9 +6,12 @@ schemas: []
 
 openldap_server_pkgs:
   - slapd
+  - slapd-contrib
   - ldap-utils
+  - libsasl2-modules-ldap
   - python-selinux
   - openssl
+  - gosa-schema
   - debconf-utils
   - python-pip
   - libsasl2-dev

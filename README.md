@@ -1,37 +1,37 @@
 # Role Ansible - OpenLDAP
 
-Rôle en cours de développement...
+Ansible role for the openldap setup.
 
-## TDL
+Support RFC 2307bis.
 
-- Obtention d'un certificat via notre CA    CHECK
-- Installation de slapd    CHECK
-- Configuration de l'APT    CHECK
-- Activation de STARTTLS    CHECK
-- Création des admins
-- Overlays
-- Structuration de l'arbre
-- Sécurisation avec permissions réduite
-- Forcer STARTTLS
-- Ajout de schéma
+Client cert path : `/opt/ca.crt`
 
-### OUs
+### Example
 ```yaml
+domain: devo.re
+org: devo
+ldap_backend: "mdb"
+
 ou:
-  - name: group
-    orgs:
-      - elukerio
-      - libmail
+  - name: groups
   - name: people
-    orgs:
-      - elukerio
-      - libmail
   - name: system
-```
 
-### Schema
-```yaml
-pen: 15586
+cn:
+  - name: lastGID
+    oc: #Object Class
+      - device
+      - top
+    description: last gid of a group
+  - name: admins
+    base: groups
+    description: devo admins
+    member: cn=admin,dc=devo,dc=re
+  - name: everybody
+    base: groups
+    description: devo everybody
+
+pen: 99999
 schemas:
   - name: mail
     position: 1
@@ -46,52 +46,27 @@ schemas:
         equality: caseExactMatch
         options:
           - single-value
-      - name: mailalliasfrom
+      - name: mailaliasfrom
         desc: Mail from
         equality: caseExactMatch
         options:
           - single-value
-      - name: mailalliasto
+      - name: mailaliasto
         desc: Mail to
         equality: caseExactMatch
-      - name: mailaliasactif
-        desc: Alias actif
-        equality: caseExactMatch
-        options:
-          - single-value
-      - name: maildomainactif
-        desc: Domaine Actif
-        equality: caseExactMatch
-        options:
-          - single-value
     classes:
-      - name: mailaccountlibmail
+      - name: mailaccount
         sup: top
         type: auxiliary
         must:
-          - mailaccountquota
-          - mailaccountactif
-      - name: mailaliaslibmail
-        sup: top
-        type: structural
-        must:
-          - cn
-          - mailaliasfrom
-          - mailaliasto
-          - mailaliasactif
-      - name: maildomainlibmail
-        sup: top
-        type: auxiliary
-        must:
-          - maildomain
-          - maildomainactif
+          - mailquota
+          - mailactif
 ```
 
-### Groups
-```yaml
-groupes:
-  - name: adminsys
-    org: elukerio
-    description: AdminSys
-    type: group0fNames
-```
+### License
+
+GPLv3
+
+### Author Information
+
+Pierre Coimbra
