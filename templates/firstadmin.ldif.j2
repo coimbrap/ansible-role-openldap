@@ -1,0 +1,20 @@
+dn: uid={{ admin_username }},ou=people,{{ ldap_basedc }}
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: {{ admin_username }}
+givenName: {{ admin_firstname }}
+sn: {{ admin_subname }}
+cn: {{ admin_firstname }} {{ admin_subname }}
+displayName: {{ admin_firstname }} {{ admin_subname }}
+uidNumber: 2000
+gidNumber: 2000
+loginShell: /bin/bash
+homeDirectory: /home/{{ admin_username }}
+userPassword: {{ admin_password }}
+mail: {{ admin_firstname | lower }}@devo.re
+
+dn: cn=admins,ou=groups,{{ ldap_basedc }}
+changetype: modify
+add: uniqueMember
+uniqueMember: uid={{ admin_username }},ou=people,{{ ldap_basedc }}

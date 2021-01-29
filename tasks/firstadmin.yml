@@ -1,0 +1,7 @@
+- name: users | render template firstadmin.ldif
+  template:
+    src: templates/firstadmin.ldif.j2
+    dest: "{{ tmp_dir }}/firstadmin.ldif"
+
+- name: groups | add config
+  command: "ldapadd -cxD cn=admin,{{ ldap_basedc }} -w {{ ldap_pw }} -f {{ tmp_dir }}/firstadmin.ldif"

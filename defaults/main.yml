@@ -1,8 +1,8 @@
 ---
 # defaults file for openldap
 
-pen: 15586
-schemas: []
+rewrite_ldap: false
+install_ldap: false
 
 openldap_server_pkgs:
   - slapd
@@ -29,11 +29,40 @@ overlays:
   - auditlog
   - ppolicy
 
+ou:
+  - name: groups
+  - name: people
+  - name: system
+
+cn:
+  - name: lastGID
+    oc:
+      - device
+      - top
+    description: last gid of a group
+  - name: lastUID
+    oc:
+      - device
+      - top
+    description: last uid of an account
+  - name: admins
+    base: groups
+    description: admins
+    member: cn=admin,dc=example,dc=com
+  - name: everybody
+    base: groups
+    description: everybody
+
+pen: 15586
+schemas: []
+
+admin_username: root
+admin_firstname: root
+admin_subname: user
+admin_password: strongpass4
+
 ldap_domain: ldap.{{ domain }}
 cert_path: /etc/ssl/ldap
 overlay_path: templates/overlays/
 ldap_basedc: dc={{ domain.split('.') | join(",dc=") }}
 log_level: 256
-
-rewrite_ldap: false
-install_ldap: false

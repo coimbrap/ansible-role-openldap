@@ -8,6 +8,7 @@
 - import_tasks: unprivileged.yml
 - import_tasks: groups.yml
 - import_tasks: schemas.yml
+- import_tasks: firstadmin.yml
 - import_tasks: forcetls.yml
 
 - meta: flush_handlers
